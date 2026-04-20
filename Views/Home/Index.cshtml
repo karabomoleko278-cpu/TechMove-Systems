@@ -1,0 +1,124 @@
+@model TechMoveSystems.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="hero-panel">
+    <div class="hero-panel__content">
+        <p class="eyebrow">Operations Overview</p>
+        <h1>Manage your client contracts and service requests in one place.</h1>
+        <p class="hero-copy">
+            Track active contracts, log service requests, and view real-time USD to ZAR cost conversions
+            across all your logistics operations.
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-pill" asp-controller="Contracts" asp-action="Create">Create Contract</a>
+            <a class="btn btn-outline-light btn-pill" asp-controller="ServiceRequests" asp-action="Create">Create Service Request</a>
+        </div>
+    </div>
+    <div class="hero-panel__metrics">
+        <div>
+            <span>Live USD to ZAR</span>
+            <strong>@Model.LatestExchangeRate.ToString("0.0000")</strong>
+        </div>
+        <div>
+            <span>Active contracts</span>
+            <strong>@Model.ActiveContractCount</strong>
+        </div>
+        <div>
+            <span>Total requests</span>
+            <strong>@Model.RequestCount</strong>
+        </div>
+    </div>
+</section>
+
+<section class="summary-grid">
+    <article class="summary-tile">
+        <span>Clients</span>
+        <strong>@Model.ClientCount</strong>
+        <p>Active business accounts across all service regions.</p>
+    </article>
+    <article class="summary-tile">
+        <span>Contracts</span>
+        <strong>@Model.ContractCount</strong>
+        <p>Client agreements with signed documents and service-level details.</p>
+    </article>
+    <article class="summary-tile">
+        <span>Workflow status</span>
+        <strong>Active</strong>
+        <p>Only contracts in good standing can receive new service requests.</p>
+    </article>
+    <article class="summary-tile">
+        <span>Agreements</span>
+        <strong>PDF only</strong>
+        <p>Signed contract documents are securely stored and available to download.</p>
+    </article>
+</section>
+
+<section class="workspace-grid">
+    <div class="workspace-panel">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Attention queue</p>
+                <h2>Contracts requiring review</h2>
+            </div>
+            <a asp-controller="Contracts" asp-action="Index">Open contracts</a>
+        </div>
+
+        @if (Model.ContractsRequiringAttention.Any())
+        {
+            <div class="list-stack">
+                @foreach (var contract in Model.ContractsRequiringAttention)
+                {
+                    <article class="list-row">
+                        <div>
+                            <strong>@contract.Client?.Name</strong>
+                            <p>@contract.ServiceLevel</p>
+                        </div>
+                        <div>
+                            <span class="status-chip status-chip--@contract.Status.ToString().ToLowerInvariant()">@contract.Status</span>
+                            <p>Ends @contract.EndDate.ToString("dd MMM yyyy")</p>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="empty-state">No contracts are currently in an alert state.</p>
+        }
+    </div>
+
+    <div class="workspace-panel">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Recent activity</p>
+                <h2>Latest service requests</h2>
+            </div>
+            <a asp-controller="ServiceRequests" asp-action="Index">Open requests</a>
+        </div>
+
+        @if (Model.RecentRequests.Any())
+        {
+            <div class="list-stack">
+                @foreach (var request in Model.RecentRequests)
+                {
+                    <article class="list-row">
+                        <div>
+                            <strong>@request.Description</strong>
+                            <p>@request.Contract?.Client?.Name</p>
+                        </div>
+                        <div>
+                            <span class="status-chip">@request.Status</span>
+                            <p>R @request.CostZar.ToString("N2")</p>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="empty-state">No service requests have been captured yet.</p>
+        }
+    </div>
+</section>

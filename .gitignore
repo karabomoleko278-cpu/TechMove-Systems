@@ -1,0 +1,35 @@
+## ASP.NET Core / .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+.dotnet/
+
+## NuGet
+*.nupkg
+.nuget/packages/
+
+## Published output
+publish/
+out/
+
+## Rider
+.idea/
+
+## Logs
+*.log
+run.out.txt
+run.err.txt
+
+## Uploaded files (stored locally, not committed)
+wwwroot/uploads/
+
+## User secrets / local config overrides
+appsettings.Development.json
+secrets.json
+
+## OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,88 @@
+@model TechMoveSystems.ViewModels.ServiceRequestCreateViewModel
+@using TechMoveSystems.Models
+@using System.Globalization
+@{
+    ViewData["Title"] = "New Service Request";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">New Service Request</p>
+        <h1>Log a new service request against an active client contract.</h1>
+        <p>The ZAR cost is calculated automatically using the current USD exchange rate.</p>
+    </div>
+</section>
+
+<section class="form-shell">
+    <div class="workflow-banner @(Model.HasAvailableContracts ? "workflow-banner--ready" : "workflow-banner--blocked")">
+        <strong>@(Model.HasAvailableContracts ? "Ready to submit" : "Action required")</strong>
+        <span>@Model.WorkflowNotice</span>
+    </div>
+
+    <form method="post" asp-action="Create" asp-controller="ServiceRequests">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-grid">
+            <div class="form-span-2">
+                <label asp-for="ContractId" class="form-label"></label>
+                @if (Model.HasAvailableContracts)
+                {
+                    <select asp-for="ContractId" class="form-select" asp-items="Model.Contracts">
+                        <option value="">Select eligible contract</option>
+                    </select>
+                }
+                else
+                {
+                    <select asp-for="ContractId" class="form-select" disabled="disabled">
+                        <option value="">No eligible contracts available</option>
+                    </select>
+                    <input type="hidden" asp-for="ContractId" />
+                }
+                <span asp-validation-for="ContractId" class="text-danger"></span>
+            </div>
+            <div class="form-span-2">
+                <label asp-for="Description" class="form-label"></label>
+                <input asp-for="Description" class="form-control" placeholder="Describe the client request and delivery need" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="CostUsd" class="form-label"></label>
+                <input asp-for="CostUsd" class="form-control" id="usdAmount" type="number" min="0" step="0.01" placeholder="0.00" />
+                <span asp-validation-for="CostUsd" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<RequestStatus>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="ExchangeRate" class="form-label"></label>
+                @* Display only — no name/binding, avoids locale comma errors *@
+                <input class="form-control" id="exchangeRate" value="@Model.ExchangeRate.ToString("F4", CultureInfo.InvariantCulture)" readonly />
+                @* Hidden field posts the value in invariant-culture format *@
+                <input type="hidden" name="ExchangeRate" value="@Model.ExchangeRate.ToString(CultureInfo.InvariantCulture)" />
+            </div>
+            <div>
+                <label asp-for="CostZar" class="form-label"></label>
+                <input class="form-control" id="zarDisplay" value="@Model.CostZar.ToString("F2", CultureInfo.InvariantCulture)" readonly />
+                @* Hidden field posts the computed ZAR value; JS keeps it in sync *@
+                <input type="hidden" name="CostZar" id="zarHidden" value="@Model.CostZar.ToString(CultureInfo.InvariantCulture)" />
+                <div class="form-help mt-2">The ZAR total updates as you type the USD amount.</div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary btn-pill" type="submit" @(!Model.HasAvailableContracts ? "disabled" : "")>Save Service Request</button>
+            @if (!Model.HasAvailableContracts)
+            {
+                <a class="btn btn-outline-secondary btn-pill" asp-controller="Contracts" asp-action="Create">Create Contract First</a>
+            }
+            <a class="btn btn-outline-secondary btn-pill" asp-action="Index">Back to Requests</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

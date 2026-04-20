@@ -1,0 +1,67 @@
+@model IEnumerable<TechMoveSystems.Models.ServiceRequest>
+@{
+    ViewData["Title"] = "Service Requests";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Service Requests</p>
+        <h1>All service requests logged against your client contracts.</h1>
+        <p>Each request shows the cost in USD and the converted ZAR amount at the rate used on the day it was created.</p>
+    </div>
+    <a class="btn btn-primary btn-pill" asp-action="Create">Add Service Request</a>
+</section>
+
+<section class="table-shell">
+    @if (Model.Any())
+    {
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>USD</th>
+                    <th>Rate</th>
+                    <th>ZAR</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var request in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@request.Contract?.Client?.Name</strong>
+                            <div>@request.Contract?.ServiceLevel</div>
+                        </td>
+                        <td>@request.Description</td>
+                        <td><span class="status-chip status-chip--@request.Status.ToString().ToLowerInvariant()">@request.Status</span></td>
+                        <td>$@request.CostUsd.ToString("N2")</td>
+                        <td>@request.ExchangeRate.ToString("0.0000")</td>
+                        <td>R @request.CostZar.ToString("N2")</td>
+                        <td>@request.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+                        <td>
+                            <form method="post" asp-action="Delete" asp-route-id="@request.Id"
+                                  onsubmit="return confirm('Delete this service request?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-pill" style="padding:0.45rem 0.9rem;font-size:0.82rem;">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="empty-state empty-state--action">
+            <strong>No service requests yet.</strong>
+            <p>Create your first request from an active contract to start the workflow.</p>
+            <a class="btn btn-primary btn-pill" asp-action="Create">Create Service Request</a>
+        </div>
+    }
+</section>
