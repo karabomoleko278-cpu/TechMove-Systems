@@ -4,39 +4,33 @@
     ViewData["Title"] = "Contracts";
 }
 
-<section class="page-heading">
-    <div>
-        <p class="eyebrow">Contracts</p>
-        <h1>View and manage all your client contracts.</h1>
-        <p>Filter by date range or status to find the contract you need.</p>
-    </div>
-    <a class="btn btn-primary btn-pill" asp-action="Create">Add Contract</a>
-</section>
+<div class="container mt-5">
+    <h1>Contracts List</h1>
+    <a class="btn btn-primary mb-3" asp-action="Create">Add Contract</a>
 
-<section class="table-shell">
-    <form method="get" class="filter-bar">
-        <div>
-            <label class="form-label" for="startDate">Start from</label>
-            <input class="form-control" id="startDate" name="startDate" type="date" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+    <form method="get" class="row mb-4">
+        <div class="col-md-3">
+            <label>Start Date</label>
+            <input class="form-control" name="startDate" type="date" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
         </div>
-        <div>
-            <label class="form-label" for="endDate">End by</label>
-            <input class="form-control" id="endDate" name="endDate" type="date" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+        <div class="col-md-3">
+            <label>End Date</label>
+            <input class="form-control" name="endDate" type="date" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
         </div>
-        <div>
-            <label class="form-label" for="status">Status</label>
-            <select class="form-select" id="status" name="status" asp-for="Status" asp-items="Html.GetEnumSelectList<ContractStatus>()">
+        <div class="col-md-3">
+            <label>Status</label>
+            <select class="form-control" name="status" asp-for="Status" asp-items="Html.GetEnumSelectList<ContractStatus>()">
                 <option value="">All statuses</option>
             </select>
         </div>
-        <div class="d-flex align-items-end">
-            <button class="btn btn-primary btn-pill w-100" type="submit">Apply Filters</button>
+        <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-secondary w-100" type="submit">Filter</button>
         </div>
     </form>
 
     @if (Model.Contracts.Any())
     {
-        <table class="table align-middle">
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Client</th>
@@ -46,7 +40,7 @@
                     <th>Status</th>
                     <th>Requests</th>
                     <th>Agreement</th>
-                    <th></th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,31 +48,24 @@
                 {
                     <tr>
                         <td>
-                            <strong>@contract.Client?.Name</strong>
-                            <div>@contract.Client?.ContactDetails</div>
+                            @contract.Client?.Name<br/>
+                            <small>@contract.Client?.ContactDetails</small>
                         </td>
                         <td>@contract.Client?.Region</td>
                         <td>@contract.ServiceLevel</td>
-                        <td>@contract.StartDate.ToString("dd MMM yyyy") - @contract.EndDate.ToString("dd MMM yyyy")</td>
-                        <td><span class="status-chip status-chip--@contract.Status.ToString().ToLowerInvariant()">@contract.Status</span></td>
+                        <td>@contract.StartDate.ToString("yyyy-MM-dd") to @contract.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td>@contract.Status</td>
                         <td>@contract.ServiceRequests.Count</td>
                         <td>
                             @if (!string.IsNullOrWhiteSpace(contract.SignedAgreementPath))
                             {
-                                <a asp-action="DownloadAgreement" asp-route-id="@contract.Id">Download PDF</a>
-                            }
-                            else
-                            {
-                                <span class="text-muted">No file</span>
+                                <a asp-action="DownloadAgreement" asp-route-id="@contract.Id">Download</a>
                             }
                         </td>
                         <td>
-                            <form method="post" asp-action="Delete" asp-route-id="@contract.Id"
-                                  onsubmit="return confirm('Delete this contract and its client? This cannot be undone.');">
+                            <form method="post" asp-action="Delete" asp-route-id="@contract.Id">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-danger btn-pill" style="padding:0.45rem 0.9rem;font-size:0.82rem;">
-                                    Delete
-                                </button>
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -88,10 +75,6 @@
     }
     else
     {
-        <div class="empty-state empty-state--action">
-            <strong>No contracts match the current filter.</strong>
-            <p>Create a contract first so service requests have a valid parent workflow.</p>
-            <a class="btn btn-primary btn-pill" asp-action="Create">Create Contract</a>
-        </div>
+        <p>No contracts found.</p>
     }
-</section>
+</div>

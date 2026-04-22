@@ -4,70 +4,43 @@
     ViewData["Title"] = "New Contract";
 }
 
-<section class="page-heading">
-    <div>
-        <p class="eyebrow">New Contract</p>
-        <h1>Register a new client contract and attach the signed agreement.</h1>
-        <p>Fill in the client details, set the contract period, and upload the signed PDF to keep everything in one place.</p>
-    </div>
-</section>
-
-<section class="form-shell">
-    <form method="post" enctype="multipart/form-data" asp-action="Create" asp-controller="Contracts">
+<div class="container mt-5">
+    <h1>Create Contract</h1>
+    <form method="post" enctype="multipart/form-data" asp-action="Create">
         @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-        <div class="form-grid">
-            <div>
-                <label asp-for="ClientName" class="form-label"></label>
-                <input asp-for="ClientName" class="form-control" />
-                <span asp-validation-for="ClientName" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="ContactDetails" class="form-label"></label>
-                <input asp-for="ContactDetails" class="form-control" />
-                <span asp-validation-for="ContactDetails" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="Region" class="form-label"></label>
-                <input asp-for="Region" class="form-control" />
-                <span asp-validation-for="Region" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="ServiceLevel" class="form-label"></label>
-                <input asp-for="ServiceLevel" class="form-control" />
-                <span asp-validation-for="ServiceLevel" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="StartDate" class="form-label"></label>
-                <input asp-for="StartDate" class="form-control" type="date" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="EndDate" class="form-label"></label>
-                <input asp-for="EndDate" class="form-control" type="date" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="Status" class="form-label"></label>
-                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ContractStatus>()"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="SignedAgreement" class="form-label"></label>
-                <input asp-for="SignedAgreement" class="form-control" type="file" accept=".pdf,application/pdf" />
-                <div class="form-help mt-2">Accepted format: PDF only.</div>
-                <span asp-validation-for="SignedAgreement" class="text-danger"></span>
-            </div>
+        <div class="mb-3">
+            <label asp-for="ClientName" class="form-label"></label>
+            <input asp-for="ClientName" class="form-control" />
         </div>
-
-        <div class="form-actions">
-            <button class="btn btn-primary btn-pill" type="submit">Save Contract</button>
-            <a class="btn btn-outline-secondary btn-pill" asp-action="Index">Back to Contracts</a>
+        <div class="mb-3">
+            <label asp-for="ContactDetails" class="form-label"></label>
+            <input asp-for="ContactDetails" class="form-control" />
         </div>
+        <div class="mb-3">
+            <label asp-for="Region" class="form-label"></label>
+            <input asp-for="Region" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="ServiceLevel" class="form-label"></label>
+            <input asp-for="ServiceLevel" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="StartDate" class="form-label"></label>
+            <input asp-for="StartDate" class="form-control" type="date" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="EndDate" class="form-label"></label>
+            <input asp-for="EndDate" class="form-control" type="date" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<ContractStatus>()"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="SignedAgreement" class="form-label"></label>
+            <input asp-for="SignedAgreement" class="form-control" type="file" accept=".pdf,application/pdf" />
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <a class="btn btn-secondary" asp-action="Index">Cancel</a>
     </form>
-</section>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+</div>

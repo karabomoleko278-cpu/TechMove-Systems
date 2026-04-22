@@ -3,54 +3,31 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TechMove Systems</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/TechMoveSystems.styles.css" asp-append-version="true" />
 </head>
 <body>
-    @{
-        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-    }
-    <div class="app-shell">
-        <header class="topbar">
-            <div class="container-fluid shell-container">
-                <a class="brandmark" asp-controller="Home" asp-action="Index">
-                    <span class="brandmark__seal">TM</span>
-                    <span>
-                        <strong>TechMove Systems</strong>
-                        <small>Operations Control Centre</small>
-                    </span>
-                </a>
-                <nav class="topnav">
-                    <a class="@(currentController == "Home" ? "is-active" : null)" asp-controller="Home" asp-action="Index">Dashboard</a>
-                    <a class="@(currentController == "Contracts" && currentAction == "Index" ? "is-active" : null)" asp-controller="Contracts" asp-action="Index">Contracts</a>
-                    <a class="@(currentController == "Contracts" && currentAction == "Create" ? "is-active" : null)" asp-controller="Contracts" asp-action="Create">New Contract</a>
-                    <a class="@(currentController == "ServiceRequests" && currentAction == "Index" ? "is-active" : null)" asp-controller="ServiceRequests" asp-action="Index">Requests</a>
-                    <a class="@(currentController == "ServiceRequests" && currentAction == "Create" ? "is-active" : null)" asp-controller="ServiceRequests" asp-action="Create">New Request</a>
-                </nav>
-            </div>
-        </header>
-
-        <main class="main-stage">
-            <div class="container-fluid shell-container">
-                @if (TempData["SuccessMessage"] is string successMessage)
-                {
-                    <div class="alert alert-success alert-soft" role="alert">@successMessage</div>
-                }
-
-                @RenderBody()
-            </div>
-        </main>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">App Logo</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" asp-controller="Contracts" asp-action="Index">Contracts</a></li>
+            <li class="nav-item"><a class="nav-link" asp-controller="ServiceRequests" asp-action="Index">Requests</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container mt-4">
+        @if (TempData["SuccessMessage"] is string successMessage)
+        {
+            <div class="alert alert-success" role="alert">@successMessage</div>
+        }
+        @RenderBody()
     </div>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
